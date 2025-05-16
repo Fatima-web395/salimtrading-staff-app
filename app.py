@@ -38,9 +38,8 @@ class Employee(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-@app.before_first_request
-def create_admin():
+               
+with app.app_context():
     db.create_all()
     if not Employee.query.filter_by(employee_id='ADMIN').first():
         admin = Employee(
