@@ -66,14 +66,25 @@ def index():
 def invite():
     if 'employee_id' not in session or session['employee_id'] != 'ADMIN':
         return redirect(url_for('login'))
+
     if request.method == 'POST':
         email = request.form['email']
+        if not email:
+            flash('Please enter a valid email address.')
+            return redirect(url_for('invite'))
+
         token = s.dumps(email, salt='email-invite')
         link = url_for('register', token=token, _external=True)
-        msg = Message('SalimTrading Staff Registration', sender=app.config['MAIL_USERNAME'], recipients=[email])
-        msg.body = f'Register here: {link}'
-        mail.send(msg)
-        flash(f'Invite sent to {email}')
+        try:
+            msg = Message('SalimTrading Staff Registration',
+                          sender=app.config['MAIL_USERNAME'],
+                          recipients=[email])
+            msg.body = f'Register here: {link}'
+            mail.send(msg)
+            flash(f'Invite sent to {email}')
+        except Exception as e:
+            flash(f'Failed to send email: {str(e)}')
+            print("Error sending email:", e)
     return render_template('invite.html')
 
 @app.route('/register/<token>', methods=['GET', 'POST'])
