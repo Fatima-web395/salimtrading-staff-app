@@ -1,3 +1,4 @@
+ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
@@ -141,7 +142,7 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    import os
+   
     port = int(os.environ.get('PORT', 5000))  # Render provides PORT
     app.run(host='0.0.0.0', port=port)
 
